@@ -19,13 +19,13 @@ int main(int argc, char **argv) {
   if (argc != 2) {
     cerr << "error: missing input file" << endl;
     return 1;
-  } else if ("./sample.txt" != string(argv[1]) &&
-             "./input.txt" != string(argv[1])) {
-    cerr << "error: input file should be './sample.txt' or './inut.txt'"
-         << endl;
+  }
+  const string filename = string(argv[1]);
+  if (!filename.contains("sample") && !filename.contains("input")) {
+    cerr << "error: input file '" << filename << "' should contain './sample' or './input'" << endl;
     return 1;
   }
-  isSample = ("./sample.txt" == string(argv[1]));
+  isSample = filename.contains("sample");
   ifstream infile(argv[1]);
   if (!infile) {
     cerr << "error opening file" << endl;
@@ -156,8 +156,7 @@ vector<vector<T>> readInput(const vector<string> &lines) {
 vector<vector<char>> readMatrix(const vector<string> &lines) {
   vector<vector<char>> result(lines.size(), vector<char>(lines[0].size(), '%'));
   for (size_t row = 0; row < lines.size(); ++row)
-    for (size_t col = 0; col < lines[row].size(); ++col)
-      result[row][col] = lines[row][col];
+    for (size_t col = 0; col < lines[row].size(); ++col) result[row][col] = lines[row][col];
   return result;
 }
 
@@ -166,8 +165,8 @@ set<char> chars(const string &str) { return set<char>(str.begin(), str.end()); }
 template <typename F, typename G>
 vector<char> intersection(const F &container1, const G &container2) {
   vector<char> result;
-  set_intersection(container1.begin(), container1.end(), container2.begin(),
-                   container2.end(), std::back_inserter(result));
+  set_intersection(container1.begin(), container1.end(), container2.begin(), container2.end(),
+                   std::back_inserter(result));
   return result;
 }
 
@@ -200,11 +199,9 @@ void printQ(queue<ll> q) {
   cout << v << endl;
 }
 
-vector<ll> dijkstra(const function<vector<pair<int, ll>>(int)> neighbours,
-                    const int N, const int start) {
+vector<ll> dijkstra(const function<vector<pair<int, ll>>(int)> neighbours, const int N, const int start) {
   vector<ll> dist(N, numeric_limits<ll>::max() / 2);
-  priority_queue<pair<ll, int>, vector<pair<ll, int>>, greater<pair<ll, int>>>
-      pq;
+  priority_queue<pair<ll, int>, vector<pair<ll, int>>, greater<pair<ll, int>>> pq;
 
   pq.push({0, start});
   while (pq.size()) {
@@ -214,14 +211,11 @@ vector<ll> dijkstra(const function<vector<pair<int, ll>>(int)> neighbours,
     pq.pop();
     if (dist[v] <= d) continue;
     dist[v] = d;
-    for (const auto &[id, distance] : neighbours(v))
-      pq.push({d + distance, id});
+    for (const auto &[id, distance] : neighbours(v)) pq.push({d + distance, id});
   }
   return dist;
 }
 
 int zip(const int N, const int x, const int y) { return N * y + x; }
 
-pair<int, int> unzip(const int N, const int vertex) {
-  return {vertex % N, vertex / N};
-}
+pair<int, int> unzip(const int N, const int vertex) { return {vertex % N, vertex / N}; }
