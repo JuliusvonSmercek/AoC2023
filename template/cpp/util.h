@@ -184,7 +184,7 @@ vector<string> split(const string &str, const string &delimiter = " ") {
   size_t last = 0, next = 0;
   while ((next = str.find(delimiter, last)) != string::npos) {
     result.push_back(str.substr(last, next - last));
-    last = next + 1;
+    last = next + delimiter.size();
   }
   result.push_back(str.substr(last));
   return result;
